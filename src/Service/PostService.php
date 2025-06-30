@@ -19,7 +19,7 @@ class PostService
 
     public function getPosts(int $userId, int $page, int $limit, string $sortOrder = 'DESC'): array
     {
-        $user = $this->userRepository->findById($userId);
+        $user = $this->userRepository->getById($userId);
 
         if (empty($user)) {
             throw new NotFoundHttpException('User not found');

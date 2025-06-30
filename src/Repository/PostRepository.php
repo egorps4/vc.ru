@@ -2,19 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\Persistence\ManagerRegistry;
 
 class PostRepository extends ServiceEntityRepository
 {
     private Connection $connection;
 
-    public function __construct(ManagerRegistry $registry, Connection $connection)
+    public function __construct(Connection $connection)
     {
-        parent::__construct($registry, Post::class);
         $this->connection = $connection;
+    }
+
+    public function getById(int $id): array
+    {
+        $sql = 'SELECT * FROM post WHERE id = :id';
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue('id', $id, \PDO::PARAM_INT);
+
+        return $stmt->executeQuery()->fetchAssociative() ?: null;
     }
 
     public function getPosts(int $userId, int $page = 1, int $limit = 50, string $sortOrder = 'DESC'): array
@@ -27,7 +34,7 @@ class PostRepository extends ServiceEntityRepository
                 LEFT JOIN "user" u ON u.id = p.author_id 
                 WHERE uw.user_id IS NULL AND p.view_count <= :maxViews
                 ORDER BY p.hotness ' . $sortOrder .
-                ' LIMIT :limit OFFSET :offset';
+            ' LIMIT :limit OFFSET :offset';
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue('userId', $userId, \PDO::PARAM_INT);

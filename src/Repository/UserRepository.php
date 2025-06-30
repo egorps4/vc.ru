@@ -2,14 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private Connection $connection;
+
+    public function __construct(Connection $connection)
     {
-        parent::__construct($registry, User::class);
+        $this->connection = $connection;
+    }
+
+    public function getById(int $id): array
+    {
+        $sql = 'SELECT * FROM "user" WHERE id = :id';
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue('id', $id, \PDO::PARAM_INT);
+
+        return $stmt->executeQuery()->fetchAssociative() ?: null;
     }
 }
