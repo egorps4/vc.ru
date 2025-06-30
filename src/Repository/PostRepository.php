@@ -30,7 +30,7 @@ class PostRepository extends ServiceEntityRepository
 
         $sql = 'SELECT p.*, u.name as author_name
                 FROM post p
-                LEFT JOIN user_view uw ON p.id = uw.user_id AND uw.user_id = :userId
+                LEFT JOIN user_view uw ON p.id = uw.post_id AND uw.user_id = :userId
                 LEFT JOIN "user" u ON u.id = p.author_id 
                 WHERE uw.user_id IS NULL AND p.view_count <= :maxViews
                 ORDER BY p.hotness ' . $sortOrder .
