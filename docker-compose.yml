@@ -16,6 +16,10 @@ services:
       POSTGRES_DB: vc_db
     volumes:
       - db_data:/var/lib/postgresql/data:rw
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
   nginx:
     image: nginx:latest
     ports:
@@ -28,3 +32,4 @@ services:
 volumes:
   db_data:
   vendor_data:
+  redis_data:

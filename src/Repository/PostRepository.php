@@ -4,14 +4,17 @@ namespace App\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Predis\Client;
 
 class PostRepository extends ServiceEntityRepository
 {
     private Connection $connection;
+    private Client $redis;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, Client $redis)
     {
         $this->connection = $connection;
+        $this->redis = $redis;
     }
 
     public function getById(int $id): array
@@ -26,6 +29,13 @@ class PostRepository extends ServiceEntityRepository
 
     public function getPosts(int $userId, int $page = 1, int $limit = 50, string $sortOrder = 'DESC'): array
     {
+        $cacheKey = sprintf('posts:user:%d:page:%d:limit:%d', $userId, $page, $limit);
+        $cached = $this->redis->get($cacheKey);
+
+        if ($cached) {
+            return json_decode($cached, true);
+        }
+
         $offset = $limit * ($page - 1);
 
         $sql = 'SELECT p.*, u.name as author_name
@@ -44,6 +54,15 @@ class PostRepository extends ServiceEntityRepository
         $posts = $stmt->executeQuery()->fetchAllAssociative();
 
         $totalItems = $this->getUserPostsTotalCount($userId);
+
+        $result = [
+            'posts' => $posts,
+            'currentPage' => $page,
+            'totalPages' => (int)ceil($totalItems / $limit),
+            'totalItems' => $totalItems,
+        ];
+
+        $this->redis->setex($cacheKey, 300, json_encode($result));
 
         return [
             'posts' => $posts,
