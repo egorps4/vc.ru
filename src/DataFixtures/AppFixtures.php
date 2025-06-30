@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
             $post->setHotness($faker->randomFloat(2, 0, 100));
             $post->setCreatedAt($faker->dateTimeBetween('-1 year', 'now'));
             $post->setAuthor($faker->randomElement($users));
-            $post->incrementViewCount($faker->numberBetween(0, 1500));
+            $post->setViewCount($faker->numberBetween(0, 1500));
             $manager->persist($post);
         }
 
