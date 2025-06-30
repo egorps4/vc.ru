@@ -62,7 +62,8 @@ class PostRepository extends ServiceEntityRepository
             'totalItems' => $totalItems,
         ];
 
-        $this->redis->setex($cacheKey, 300, json_encode($result));
+        //Для удобства проверки время жизни кеша занижено
+        $this->redis->setex($cacheKey, 10, json_encode($result));
 
         return [
             'posts' => $posts,

@@ -44,7 +44,7 @@ class PostController extends BaseController
             }
             return $this->responseError([
                 'status' => 'error',
-                'message' => 'Ошибка сервера'
+                'message' => 'Server error'
             ]);
         }
     }
@@ -54,7 +54,8 @@ class PostController extends BaseController
     {
         try {
             //В реальном проекте userId извлекался бы из токена авторизации
-            $userId = $request->request->get('userId');
+            $data = json_decode($request->getContent(), true);
+            $userId = isset($data['userId']) ? $data['userId'] : null;
 
             $result = $this->postService->readPost($userId, $postId);
 
@@ -73,7 +74,7 @@ class PostController extends BaseController
             }
             return $this->responseError([
                 'status' => 'error',
-                'message' => 'Ошибка сервера'
+                'message' => 'Server error'
             ]);
         }
     }

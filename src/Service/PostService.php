@@ -29,8 +29,12 @@ class PostService
         $this->em = $em;
     }
 
-    public function getPosts(int $userId, int $page, int $limit, string $sortOrder = 'DESC'): array
+    public function getPosts(?int $userId, int $page, int $limit, string $sortOrder = 'DESC'): array
     {
+        if (empty($userId) || $userId <= 0) {
+            throw new BadRequestHttpException('Invalid or missing userId');
+        }
+
         $user = $this->userRepository->getById($userId);
 
         if (empty($user)) {
@@ -58,8 +62,16 @@ class PostService
         ];
     }
 
-    public function readPost(int $userId, int $postId): array
+    public function readPost(?int $userId, ?int $postId): array
     {
+        if (empty($userId) || $userId <= 0) {
+            throw new BadRequestHttpException('Invalid or missing userId');
+        }
+
+        if (empty($postId) || $postId <= 0) {
+            throw new BadRequestHttpException('Invalid or missing postId');
+        }
+
         $user = $this->userRepository->getById($userId);
 
         if (empty($user)) {
@@ -75,7 +87,7 @@ class PostService
         $userView = $this->userViewRepository->findByUserAndPost($userId, $postId);
 
         if (!empty($userView)) {
-            throw new BadRequestHttpException('User has already read the post');
+            throw new HttpException(409, 'User has already read the post');
         }
 
         $connection = $this->em->getConnection();
