@@ -87,6 +87,12 @@ class Post
         return $this->viewCount;
     }
 
+    public function setViewCount(int $viewCount): self
+    {
+        $this->viewCount = $viewCount;
+        return $this;
+    }
+
     public function getAuthor(): User
     {
         return $this->author;
@@ -95,12 +101,6 @@ class Post
     public function setAuthor(User $user): self
     {
         $this->author = $user;
-        return $this;
-    }
-
-    public function incrementViewCount(): self
-    {
-        $this->viewCount++;
         return $this;
     }
 }
