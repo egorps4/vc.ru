@@ -37,7 +37,7 @@ class PostController extends BaseController
                 return $this->responseError([
                     'status' => 'error',
                     'message' => $exc->getMessage(),
-                ]);
+                ], $exc->getStatusCode());
             } 
             return $this->responseError([
                 'status' => 'error',
