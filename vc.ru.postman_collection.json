@@ -1,0 +1,742 @@
+{
+	"info": {
+		"_postman_id": "d0ce0ee0-0a96-4943-bd0f-aa1e0e8839d8",
+		"name": "vc.ru",
+		"description": "Коллекция api для тестового задания для vc.ru.\n\n**Автор** - Игнатьев Егор Валерьевич.\n\nСодержит два эндпоинта:\n\n**GET /api/post** - для получения списка постов. Ручка исключает посты которые пользователь уже видел, а также посты, которые были показаны пользователям более 1000 раз. Ручка имеет кеширование redis со времени жизни кеша 10 секунд (допущение в рамках тестового задания для удобства проверки).\n\nЕсть возможность задать пагинацию через query параметры **limit** и **page** - количество постов на странице и номер страницы соответсвенно.\n\nСортировка по относительной популярности поста (**hotness**) по умолчанию - **DESC**. Через query параметры можно поменять порядок сортировки - **sortOrder**.\n\nВ рамках тестовго задания также передается query параметр **userId**, для идентификация пользователя, который запросил посты. Является допущением в рамках тестового задания, в реальном проекте **userId** извлекался бы из токена авторизации.\n\n**POST - /api/post/{postId}/read** - для пометки о прочтении пользователем конкретного поста.\n\nВ теле запроса отправляется единственный параметр - **userId**, для идентификации пользователя. Является допущением в рамках тестового задания, в реальном проекте **userId** извлекался бы из токена авторизации.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27024024"
+	},
+	"item": [
+		{
+			"name": "Показ ленты постов",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/post?userId=1&page=1&limit=50&sortOrder=DESC",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1",
+							"description": "Айди пользователя, просматривающего пост."
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "Номер страницы (для пагинации). По умолчанию - 1."
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"description": "Количество постов на одной странице (для пагинации). По умолчанию - 50."
+						},
+						{
+							"key": "sortOrder",
+							"value": "DESC",
+							"description": "Порядок сортировки. По умолчанию - DESC."
+						}
+					]
+				},
+				"description": "Для получения списка постов. Ручка исключает посты которые пользователь уже видел, а также посты, которые были показаны пользователям более 1000 раз.\n\nРучка имеет кеширование redis со времени жизни кеша 10 секунд (допущение в рамках тестового задания для удобства проверки)."
+			},
+			"response": [
+				{
+					"name": "Успешный запрос",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post?userId=1&page=1&limit=50&sortOrder=DESC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1",
+									"description": "Айди пользователя, просматривающего пост."
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Номер страницы (для пагинации). По умолчанию - 1."
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Количество постов на одной странице (для пагинации). По умолчанию - 50."
+								},
+								{
+									"key": "sortOrder",
+									"value": "DESC",
+									"description": "Порядок сортировки. По умолчанию - DESC."
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:10:13 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"posts\": [\n            {\n                \"id\": 1854,\n                \"title\": \"Обзор новой игры The Witcher 4\",\n                \"content\": \"Nam esse consequatur similique qui. Laudantium sit atque impedit distinctio. Nesciunt molestiae dolore inventore.\",\n                \"hotness\": 99.98,\n                \"viewCount\": 883,\n                \"authorId\": 83,\n                \"authorName\": \"Натан из Ривии\",\n                \"createdAt\": \"2024-08-30\"\n            },\n            {\n                \"id\": 3507,\n                \"title\": \"Розыгрыш игры Baldur's Gate 4\",\n                \"content\": \"Laboriosam dolores assumenda suscipit eius. Illo nostrum et qui omnis atque.\",\n                \"hotness\": 99.98,\n                \"viewCount\": 31,\n                \"authorId\": 13,\n                \"authorName\": \"Трисс Сосиска\",\n                \"createdAt\": \"2025-01-01\"\n            },\n            {\n                \"id\": 2122,\n                \"title\": \"Почему Baldur's Gate 4 плохая игра\",\n                \"content\": \"Atque maxime deleniti sunt qui. Alias tenetur in aspernatur culpa. Beatae vel et saepe porro aut cumque. Officia laborum voluptatum provident voluptas consequatur cumque amet.\",\n                \"hotness\": 99.97,\n                \"viewCount\": 250,\n                \"authorId\": 19,\n                \"authorName\": \"Хорус Меригольд\",\n                \"createdAt\": \"2024-09-16\"\n            },\n            {\n                \"id\": 161,\n                \"title\": \"Вы НЕ поняли The Witcher 4\",\n                \"content\": \"Officiis aut natus quam doloremque. Possimus sit velit id dolor consequatur magni accusamus maxime. Cupiditate fugit reprehenderit porro dolor voluptate.\",\n                \"hotness\": 99.81,\n                \"viewCount\": 791,\n                \"authorId\": 33,\n                \"authorName\": \"Гейб из Ривии\",\n                \"createdAt\": \"2024-09-15\"\n            },\n            {\n                \"id\": 3841,\n                \"title\": \"Розыгрыш игры Cyberpunk 2078\",\n                \"content\": \"Reiciendis repudiandae et qui omnis doloremque facere. Quia rerum nisi et vel et totam. Sed temporibus magnam neque recusandae ut.\",\n                \"hotness\": 99.69,\n                \"viewCount\": 587,\n                \"authorId\": 62,\n                \"authorName\": \"Хорус Лупрекаль\",\n                \"createdAt\": \"2025-05-11\"\n            },\n            {\n                \"id\": 2655,\n                \"title\": \"Я прошел Metal Gear Solid 6 и это шедевр\",\n                \"content\": \"Sunt voluptas aut quo culpa. Ex possimus aliquid esse excepturi repellat. Nisi qui quis voluptas non aliquid perferendis maxime aut. Sint officia minus voluptatem incidunt aut.\",\n                \"hotness\": 99.65,\n                \"viewCount\": 383,\n                \"authorId\": 20,\n                \"authorName\": \"Панам Лупрекаль\",\n                \"createdAt\": \"2024-11-04\"\n            },\n            {\n                \"id\": 620,\n                \"title\": \"Я прошел Cyberpunk 2078 и это шедевр\",\n                \"content\": \"Delectus qui natus consequuntur dolores. Quia consequatur sequi quaerat sit occaecati incidunt. Et officia sed quas sed. Sit dignissimos perspiciatis non non nihil.\",\n                \"hotness\": 99.64,\n                \"viewCount\": 913,\n                \"authorId\": 64,\n                \"authorName\": \"Гейб Меригольд\",\n                \"createdAt\": \"2025-06-22\"\n            },\n            {\n                \"id\": 3845,\n                \"title\": \"Вы НЕ поняли Doom final\",\n                \"content\": \"Earum quidem porro quia harum quae. Aut dolorum exercitationem expedita libero quia nihil exercitationem. Tempora velit provident ea veritatis mollitia delectus.\",\n                \"hotness\": 99.56,\n                \"viewCount\": 362,\n                \"authorId\": 33,\n                \"authorName\": \"Гейб из Ривии\",\n                \"createdAt\": \"2024-08-19\"\n            },\n            {\n                \"id\": 488,\n                \"title\": \"Обзор новой игры Metal Gear Solid 6\",\n                \"content\": \"Voluptatem provident magnam porro voluptate dolorum. Et eum ea facere maiores ea eius. Illo neque et quia architecto ab.\",\n                \"hotness\": 99.55,\n                \"viewCount\": 67,\n                \"authorId\": 21,\n                \"authorName\": \"Солид Ньюэлл\",\n                \"createdAt\": \"2024-12-23\"\n            },\n            {\n                \"id\": 57,\n                \"title\": \"Почему Doom final плохая игра\",\n                \"content\": \"Distinctio corrupti porro omnis sint aut modi natus. Nesciunt laborum dolor quod ex aut laudantium. Natus illo recusandae eos architecto. Rerum ea consequatur voluptate vero quia non.\",\n                \"hotness\": 99.51,\n                \"viewCount\": 718,\n                \"authorId\": 3,\n                \"authorName\": \"Адам Ньюэлл\",\n                \"createdAt\": \"2024-10-17\"\n            },\n            {\n                \"id\": 3903,\n                \"title\": \"Doom final получила патч первого дня на 1000 ГБ\",\n                \"content\": \"Saepe placeat non vero. Est consequatur aliquam et quisquam et sapiente sit quis.\",\n                \"hotness\": 99.48,\n                \"viewCount\": 246,\n                \"authorId\": 10,\n                \"authorName\": \"Солид Меригольд\",\n                \"createdAt\": \"2024-09-28\"\n            },\n            {\n                \"id\": 1967,\n                \"title\": \"Утечка: Half-Life 3 выйдет до конца текущего года\",\n                \"content\": \"Qui quis repellendus et. Molestiae amet placeat ut id pariatur. Aut aut eveniet dolores sit porro commodi. Minima soluta ad consequatur saepe deserunt.\",\n                \"hotness\": 99.48,\n                \"viewCount\": 513,\n                \"authorId\": 2,\n                \"authorName\": \"Лара из Ривии\",\n                \"createdAt\": \"2024-11-15\"\n            },\n            {\n                \"id\": 2244,\n                \"title\": \"Утечка: Half-Life 3 выйдет до конца текущего года\",\n                \"content\": \"Sunt alias consectetur occaecati eveniet rerum incidunt ut. Id et similique aspernatur aperiam. Provident molestiae ipsa voluptates iure amet quis quod.\",\n                \"hotness\": 99.46,\n                \"viewCount\": 285,\n                \"authorId\": 54,\n                \"authorName\": \"Лара Палмер\",\n                \"createdAt\": \"2024-09-12\"\n            },\n            {\n                \"id\": 451,\n                \"title\": \"Я прошел Doom final и это шедевр\",\n                \"content\": \"Et quia quaerat alias rerum nihil. Dolor voluptatem sed consequuntur dolorem. Quam omnis consequatur ad consequuntur. Error quis sit quod.\",\n                \"hotness\": 99.46,\n                \"viewCount\": 559,\n                \"authorId\": 83,\n                \"authorName\": \"Натан из Ривии\",\n                \"createdAt\": \"2024-08-31\"\n            },\n            {\n                \"id\": 1656,\n                \"title\": \"Cyberpunk 2078 не повторит ошибок предшественницы - игра не выйдет\",\n                \"content\": \"Enim facere voluptate laborum velit molestiae. Atque et laudantium consequatur nihil necessitatibus velit similique. Ipsa quam maiores eos et aut.\",\n                \"hotness\": 99.45,\n                \"viewCount\": 456,\n                \"authorId\": 43,\n                \"authorName\": \"Трисс Крофт\",\n                \"createdAt\": \"2025-01-31\"\n            },\n            {\n                \"id\": 3597,\n                \"title\": \"Розыгрыш игры Baldur's Gate 4\",\n                \"content\": \"Ut expedita blanditiis placeat a et suscipit. Earum quo quod ex quia rerum nesciunt natus quia. Voluptatem amet quam mollitia tempora qui non. Eligendi fuga sunt a.\",\n                \"hotness\": 99.43,\n                \"viewCount\": 757,\n                \"authorId\": 93,\n                \"authorName\": \"Егор Игнатьев\",\n                \"createdAt\": \"2024-11-02\"\n            },\n            {\n                \"id\": 1814,\n                \"title\": \"Розыгрыш игры Cyberpunk 2078\",\n                \"content\": \"Sit quam odit fugit sed expedita rerum voluptatem. Voluptates aut a eligendi magni sit ducimus numquam. Ab enim occaecati rerum distinctio omnis officiis. Fugiat hic ab harum sunt nisi deleniti.\",\n                \"hotness\": 99.37,\n                \"viewCount\": 448,\n                \"authorId\": 54,\n                \"authorName\": \"Лара Палмер\",\n                \"createdAt\": \"2025-03-01\"\n            },\n            {\n                \"id\": 1816,\n                \"title\": \"Вы НЕ поняли Half-Life 3\",\n                \"content\": \"Pariatur harum in ut vero nihil earum nobis. Vel provident voluptas et nisi. Deserunt aut totam voluptates sit dolores qui omnis delectus.\",\n                \"hotness\": 99.32,\n                \"viewCount\": 138,\n                \"authorId\": 20,\n                \"authorName\": \"Панам Лупрекаль\",\n                \"createdAt\": \"2024-12-20\"\n            },\n            {\n                \"id\": 2256,\n                \"title\": \"Почему Half-Life 3 плохая игра\",\n                \"content\": \"Ullam quis at alias libero iste. Distinctio sit eos et ipsa. Aperiam omnis optio autem modi magnam doloremque facere. Sunt dolorum blanditiis ratione possimus.\",\n                \"hotness\": 99.26,\n                \"viewCount\": 721,\n                \"authorId\": 39,\n                \"authorName\": \"Егор Меригольд\",\n                \"createdAt\": \"2024-07-27\"\n            },\n            {\n                \"id\": 3159,\n                \"title\": \"Metal Gear Solid 6 не повторит ошибок предшественницы - игра не выйдет\",\n                \"content\": \"Enim saepe saepe tenetur ipsa laboriosam. Eos et a ea nesciunt.\",\n                \"hotness\": 99.23,\n                \"viewCount\": 469,\n                \"authorId\": 73,\n                \"authorName\": \"Дум Меригольд\",\n                \"createdAt\": \"2024-10-01\"\n            },\n            {\n                \"id\": 730,\n                \"title\": \"Почему Baldur's Gate 4 плохая игра\",\n                \"content\": \"Cumque commodi nisi recusandae. Assumenda nesciunt ut velit eveniet ab quidem. Sit sint rerum velit eius.\",\n                \"hotness\": 99.19,\n                \"viewCount\": 338,\n                \"authorId\": 92,\n                \"authorName\": \"Панам Гай\",\n                \"createdAt\": \"2024-11-28\"\n            },\n            {\n                \"id\": 3784,\n                \"title\": \"Почему Cyberpunk 2078 плохая игра\",\n                \"content\": \"Molestias sit sed laudantium vel eaque vero. Aut esse tempora consectetur rerum repudiandae deleniti. Accusantium rerum animi maxime quam repellendus recusandae nesciunt totam. Itaque harum et expedita eveniet non eaque.\",\n                \"hotness\": 99.16,\n                \"viewCount\": 717,\n                \"authorId\": 46,\n                \"authorName\": \"Дум Драке\",\n                \"createdAt\": \"2025-04-17\"\n            },\n            {\n                \"id\": 3981,\n                \"title\": \"Обзор новой игры Baldur's Gate 4\",\n                \"content\": \"Ut nostrum ut in. Eum distinctio laudantium non accusantium. Tempora velit voluptas ut consequatur blanditiis iusto. Qui voluptas est ut possimus et. Tenetur voluptatem nihil veritatis.\",\n                \"hotness\": 99.09,\n                \"viewCount\": 575,\n                \"authorId\": 8,\n                \"authorName\": \"Геральт Ньюэлл\",\n                \"createdAt\": \"2024-11-05\"\n            },\n            {\n                \"id\": 1602,\n                \"title\": \"Почему Cyberpunk 2078 плохая игра\",\n                \"content\": \"Occaecati cum voluptatem laboriosam. Et laudantium saepe facere voluptatem incidunt rem. Ducimus maiores deserunt deserunt placeat.\",\n                \"hotness\": 99.08,\n                \"viewCount\": 454,\n                \"authorId\": 8,\n                \"authorName\": \"Геральт Ньюэлл\",\n                \"createdAt\": \"2025-03-08\"\n            },\n            {\n                \"id\": 98,\n                \"title\": \"Почему Metal Gear Solid 6 плохая игра\",\n                \"content\": \"Rerum aut qui magnam quae magnam ratione sint. Accusantium qui rem qui est alias. Dolor ut magni quia.\",\n                \"hotness\": 99.05,\n                \"viewCount\": 310,\n                \"authorId\": 86,\n                \"authorName\": \"Granger Меригольд\",\n                \"createdAt\": \"2024-08-04\"\n            },\n            {\n                \"id\": 2556,\n                \"title\": \"Утечка: Cyberpunk 2078 выйдет до конца текущего года\",\n                \"content\": \"Quibusdam voluptas voluptas voluptatem sed maiores ut magnam. Facere dignissimos ipsa reiciendis et vitae. Temporibus et fuga et harum. Vel modi placeat in distinctio explicabo est aut. Qui aut sequi quia voluptatem a debitis placeat quia.\",\n                \"hotness\": 99.01,\n                \"viewCount\": 793,\n                \"authorId\": 18,\n                \"authorName\": \"Натан Дженсен\",\n                \"createdAt\": \"2024-11-15\"\n            },\n            {\n                \"id\": 2443,\n                \"title\": \"Утечка: Deus Ex Icarus выйдет до конца текущего года\",\n                \"content\": \"Sed quo et culpa earum. Voluptates et est soluta perspiciatis et.\",\n                \"hotness\": 98.98,\n                \"viewCount\": 911,\n                \"authorId\": 24,\n                \"authorName\": \"Трисс Игнатьев\",\n                \"createdAt\": \"2025-01-14\"\n            },\n            {\n                \"id\": 3781,\n                \"title\": \"Я прошел Cyberpunk 2078 и это шедевр\",\n                \"content\": \"Error natus et dolore. Cumque possimus ex ut dolores doloremque. Assumenda dignissimos optio ratione quia illo a. Consequatur et et ut aliquam cupiditate dolorum.\",\n                \"hotness\": 98.94,\n                \"viewCount\": 872,\n                \"authorId\": 93,\n                \"authorName\": \"Егор Игнатьев\",\n                \"createdAt\": \"2024-08-15\"\n            },\n            {\n                \"id\": 3309,\n                \"title\": \"Утечка: Cyberpunk 2078 выйдет до конца текущего года\",\n                \"content\": \"Debitis perspiciatis magnam quidem quisquam voluptatibus voluptates. Quis sint porro illo sunt ea. Nesciunt voluptatum repellat officia est.\",\n                \"hotness\": 98.82,\n                \"viewCount\": 886,\n                \"authorId\": 86,\n                \"authorName\": \"Granger Меригольд\",\n                \"createdAt\": \"2025-02-18\"\n            },\n            {\n                \"id\": 687,\n                \"title\": \"The Witcher 4 не повторит ошибок предшественницы - игра не выйдет\",\n                \"content\": \"Aspernatur et sequi facilis tenetur quo. Temporibus omnis eveniet quia omnis aliquid repellendus sint et. Deserunt cupiditate et dolore. Illo quos suscipit eligendi.\",\n                \"hotness\": 98.79,\n                \"viewCount\": 994,\n                \"authorId\": 19,\n                \"authorName\": \"Хорус Меригольд\",\n                \"createdAt\": \"2025-05-19\"\n            },\n            {\n                \"id\": 3123,\n                \"title\": \"Baldur's Gate 4 не повторит ошибок предшественницы - игра не выйдет\",\n                \"content\": \"Distinctio libero maxime rerum debitis et sapiente. Quas sed animi dolore rerum consequuntur dolorem. Voluptatem sit et et facere voluptas quos fugiat nobis. Reprehenderit perferendis et voluptatibus et non et distinctio.\",\n                \"hotness\": 98.73,\n                \"viewCount\": 461,\n                \"authorId\": 73,\n                \"authorName\": \"Дум Меригольд\",\n                \"createdAt\": \"2025-06-20\"\n            },\n            {\n                \"id\": 985,\n                \"title\": \"Вы НЕ поняли Baldur's Gate 4\",\n                \"content\": \"Accusamus autem doloribus laboriosam soluta. Autem quibusdam doloremque vero qui similique consectetur atque. Suscipit suscipit laborum nihil doloribus ut suscipit ut rerum.\",\n                \"hotness\": 98.66,\n                \"viewCount\": 758,\n                \"authorId\": 92,\n                \"authorName\": \"Панам Гай\",\n                \"createdAt\": \"2025-05-04\"\n            },\n            {\n                \"id\": 2086,\n                \"title\": \"Обзор новой игры Metal Gear Solid 6\",\n                \"content\": \"Voluptates minus aut quo eos quia. Non voluptatem omnis reprehenderit excepturi ab repellat saepe facere. Sed quos nostrum qui nihil et. Iure commodi sed ratione delectus deleniti maxime. Quod et recusandae iste nam eum et.\",\n                \"hotness\": 98.59,\n                \"viewCount\": 551,\n                \"authorId\": 27,\n                \"authorName\": \"Гейб из Ривии\",\n                \"createdAt\": \"2024-08-11\"\n            },\n            {\n                \"id\": 3474,\n                \"title\": \"Я прошел Cyberpunk 2078 и это шедевр\",\n                \"content\": \"Consequatur aut dolorem veritatis et molestias. Quod voluptatem provident commodi dolore officiis temporibus. Quia aliquid est dignissimos quis quaerat nihil.\",\n                \"hotness\": 98.55,\n                \"viewCount\": 298,\n                \"authorId\": 20,\n                \"authorName\": \"Панам Лупрекаль\",\n                \"createdAt\": \"2024-08-22\"\n            },\n            {\n                \"id\": 1924,\n                \"title\": \"Вы НЕ поняли Metal Gear Solid 6\",\n                \"content\": \"Est sed neque neque placeat placeat saepe. Et et amet qui et. Hic voluptatibus nam error quis qui. Magni aperiam fugit et animi assumenda quis.\",\n                \"hotness\": 98.49,\n                \"viewCount\": 821,\n                \"authorId\": 18,\n                \"authorName\": \"Натан Дженсен\",\n                \"createdAt\": \"2025-04-27\"\n            },\n            {\n                \"id\": 3058,\n                \"title\": \"Обзор новой игры The Witcher 4\",\n                \"content\": \"Minima quia illo unde in delectus alias numquam. Quis iure repellendus fugit qui debitis. Aut non aut nesciunt non molestiae voluptatem architecto.\",\n                \"hotness\": 98.45,\n                \"viewCount\": 604,\n                \"authorId\": 88,\n                \"authorName\": \"Солид Игнатьев\",\n                \"createdAt\": \"2024-12-03\"\n            },\n            {\n                \"id\": 1561,\n                \"title\": \"Почему The Witcher 4 плохая игра\",\n                \"content\": \"Alias inventore ea sit sit quos. Expedita labore beatae et natus et est. Dignissimos aut debitis et eum. Architecto autem ab tempore corporis. Vel est nemo deleniti sit unde consequatur.\",\n                \"hotness\": 98.44,\n                \"viewCount\": 852,\n                \"authorId\": 82,\n                \"authorName\": \"Хорус Палмер\",\n                \"createdAt\": \"2024-07-12\"\n            },\n            {\n                \"id\": 729,\n                \"title\": \"Doom final получила патч первого дня на 1000 ГБ\",\n                \"content\": \"Consequatur sapiente est incidunt quasi. A dolorem iusto accusamus. Enim voluptas nobis illum non sint et explicabo. Ut sit quaerat perspiciatis ea.\",\n                \"hotness\": 98.3,\n                \"viewCount\": 382,\n                \"authorId\": 99,\n                \"authorName\": \"Трисс из Ривии\",\n                \"createdAt\": \"2025-02-27\"\n            },\n            {\n                \"id\": 1279,\n                \"title\": \"Я прошел The Witcher 4 и это шедевр\",\n                \"content\": \"Odit incidunt eaque autem vel et vitae. Magni consequatur minima sequi quae. Voluptatem illo molestiae amet consequuntur enim.\",\n                \"hotness\": 98.26,\n                \"viewCount\": 957,\n                \"authorId\": 49,\n                \"authorName\": \"Гейб Снейк\",\n                \"createdAt\": \"2025-05-28\"\n            },\n            {\n                \"id\": 2961,\n                \"title\": \"Half-Life 3 получила патч первого дня на 1000 ГБ\",\n                \"content\": \"Doloremque modi molestiae expedita sunt. Ex temporibus sunt velit neque doloribus placeat ducimus. Ut omnis ea animi ea pariatur itaque suscipit. Quia dolores neque quia culpa qui exercitationem.\",\n                \"hotness\": 98.25,\n                \"viewCount\": 609,\n                \"authorId\": 16,\n                \"authorName\": \"Панам Дженсен\",\n                \"createdAt\": \"2025-04-15\"\n            },\n            {\n                \"id\": 3759,\n                \"title\": \"Вы НЕ поняли Half-Life 3\",\n                \"content\": \"Minima pariatur qui inventore qui. Dolores amet ut pariatur eos ipsum consectetur qui quisquam. Accusantium voluptatem delectus omnis quae ab dolorum. Similique dicta qui eum quod fuga rerum.\",\n                \"hotness\": 98.21,\n                \"viewCount\": 15,\n                \"authorId\": 17,\n                \"authorName\": \"Лара Дженсен\",\n                \"createdAt\": \"2024-09-17\"\n            },\n            {\n                \"id\": 1562,\n                \"title\": \"Metal Gear Solid 6 не повторит ошибок предшественницы - игра не выйдет\",\n                \"content\": \"Velit voluptatem consequatur error aut. Et alias maiores aut nihil. Qui esse in amet voluptas quibusdam debitis earum provident. Et dolores itaque consequatur nam mollitia suscipit error.\",\n                \"hotness\": 98.18,\n                \"viewCount\": 286,\n                \"authorId\": 89,\n                \"authorName\": \"Панам Палмер\",\n                \"createdAt\": \"2025-05-17\"\n            },\n            {\n                \"id\": 3134,\n                \"title\": \"Розыгрыш игры The Witcher 4\",\n                \"content\": \"Repudiandae esse doloremque voluptas incidunt. Rerum et incidunt ut ut molestias qui nihil. Laboriosam cumque sed totam qui adipisci minus. Ut architecto non quasi.\",\n                \"hotness\": 98.17,\n                \"viewCount\": 575,\n                \"authorId\": 91,\n                \"authorName\": \"Granger Драке\",\n                \"createdAt\": \"2025-05-29\"\n            },\n            {\n                \"id\": 3224,\n                \"title\": \"Розыгрыш игры Metal Gear Solid 6\",\n                \"content\": \"Dolor fugiat suscipit maiores est quas quia. Aut ut reiciendis facilis fugiat. Consequatur aut rerum nostrum non et.\",\n                \"hotness\": 98.14,\n                \"viewCount\": 480,\n                \"authorId\": 85,\n                \"authorName\": \"Джей Си Ньюэлл\",\n                \"createdAt\": \"2024-11-06\"\n            },\n            {\n                \"id\": 1039,\n                \"title\": \"Вы НЕ поняли The Witcher 4\",\n                \"content\": \"Nisi rerum deserunt ipsa non repellat. Officia cupiditate itaque perferendis cumque veniam placeat numquam. Deserunt qui earum et sequi dolores nihil. Nemo architecto vel est.\",\n                \"hotness\": 98.11,\n                \"viewCount\": 536,\n                \"authorId\": 42,\n                \"authorName\": \"Геральт Палмер\",\n                \"createdAt\": \"2025-05-28\"\n            },\n            {\n                \"id\": 1599,\n                \"title\": \"Почему Baldur's Gate 4 плохая игра\",\n                \"content\": \"Id rerum qui laborum eaque modi blanditiis. Ratione iure a illum consequatur. A iure quia aliquam exercitationem ut omnis pariatur et. Similique ex temporibus fugit ut cumque magnam.\",\n                \"hotness\": 98.08,\n                \"viewCount\": 901,\n                \"authorId\": 17,\n                \"authorName\": \"Лара Дженсен\",\n                \"createdAt\": \"2025-05-13\"\n            },\n            {\n                \"id\": 3646,\n                \"title\": \"Вы НЕ поняли Half-Life 3\",\n                \"content\": \"Praesentium quaerat officia quisquam. Numquam in explicabo recusandae iste eum dolorum. Debitis dolorem non distinctio totam natus omnis. Praesentium minima qui eos alias quibusdam voluptas iusto.\",\n                \"hotness\": 98.07,\n                \"viewCount\": 99,\n                \"authorId\": 66,\n                \"authorName\": \"Натан Снейк\",\n                \"createdAt\": \"2025-02-07\"\n            },\n            {\n                \"id\": 3803,\n                \"title\": \"Розыгрыш игры Metal Gear Solid 6\",\n                \"content\": \"Et inventore voluptatem quidem dicta. Cum quia distinctio odio deserunt omnis temporibus. Perferendis est aperiam consequatur dolorum aut quos.\",\n                \"hotness\": 98.04,\n                \"viewCount\": 678,\n                \"authorId\": 61,\n                \"authorName\": \"Трисс Лупрекаль\",\n                \"createdAt\": \"2024-12-18\"\n            },\n            {\n                \"id\": 1205,\n                \"title\": \"Вы НЕ поняли Half-Life 3\",\n                \"content\": \"Ea explicabo dolore possimus repellat tempore eaque. Ea laborum non deleniti asperiores eos adipisci. Aut iusto ipsum quia amet placeat.\",\n                \"hotness\": 98,\n                \"viewCount\": 802,\n                \"authorId\": 77,\n                \"authorName\": \"Трисс Ньюэлл\",\n                \"createdAt\": \"2024-12-30\"\n            },\n            {\n                \"id\": 3860,\n                \"title\": \"Почему Cyberpunk 2078 плохая игра\",\n                \"content\": \"Et quo tenetur rerum modi non. Nulla voluptatem velit eum facilis voluptatem velit voluptatem. Quam qui dolore delectus dolor nihil. Est ut nobis soluta perferendis sequi.\",\n                \"hotness\": 97.99,\n                \"viewCount\": 74,\n                \"authorId\": 1,\n                \"authorName\": \"Натан Сосиска\",\n                \"createdAt\": \"2025-01-02\"\n            }\n        ],\n        \"currentPage\": 1,\n        \"totalPages\": 54,\n        \"totalItems\": 2657\n    }\n}"
+				},
+				{
+					"name": "Пользователь не найден",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post?userId=101&page=1&limit=50&sortOrder=DESC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "101",
+									"description": "Айди пользователя, просматривающего пост."
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Номер страницы (для пагинации). По умолчанию - 1."
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Количество постов на одной странице (для пагинации). По умолчанию - 50."
+								},
+								{
+									"key": "sortOrder",
+									"value": "DESC",
+									"description": "Порядок сортировки. По умолчанию - DESC."
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:10:58 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"User not found\"\n}"
+				},
+				{
+					"name": "Невалидный айди пользователя",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post?userId=-1&page=1&limit=50&sortOrder=DESC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "-1",
+									"description": "Айди пользователя, просматривающего пост."
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Номер страницы (для пагинации). По умолчанию - 1."
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Количество постов на одной странице (для пагинации). По умолчанию - 50."
+								},
+								{
+									"key": "sortOrder",
+									"value": "DESC",
+									"description": "Порядок сортировки. По умолчанию - DESC."
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:11:28 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"Invalid or missing userId\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Просмотр поста пользователем",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 101\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/post/1/read",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"1",
+						"read"
+					]
+				},
+				"description": "Для пометки о прочтении пользователем конкретного поста"
+			},
+			"response": [
+				{
+					"name": "Успешный запрос",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"1",
+								"read"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:12:55 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"author_id\": 18,\n        \"title\": \"Утечка: Half-Life 3 выйдет до конца текущего года\",\n        \"content\": \"Esse sed cum rerum et eum eius laboriosam et. Ea rem cumque natus quam est qui enim impedit. Et deleniti cumque minus harum consequatur libero doloribus. Sed molestiae voluptas animi dignissimos ut veritatis.\",\n        \"hotness\": 29.25,\n        \"created_at\": \"2025-05-26 13:35:08\",\n        \"view_count\": 896\n    }\n}"
+				},
+				{
+					"name": "Пользователь уже прочел пост",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"1",
+								"read"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:13:31 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"User has already read the post\"\n}"
+				},
+				{
+					"name": "Невалидный айди поста",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/-1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"-1",
+								"read"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:14:35 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"Invalid or missing postId\"\n}"
+				},
+				{
+					"name": "Пост не найден",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/4001/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"4001",
+								"read"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:15:30 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"Post not found\"\n}"
+				},
+				{
+					"name": "Невалидный айди пользователя",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": -1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"1",
+								"read"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:15:53 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"Invalid or missing userId\"\n}"
+				},
+				{
+					"name": "Пользователь не найден",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 101\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"1",
+								"read"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.29.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 01 Jul 2025 20:16:44 GMT"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"error\",\n    \"message\": \"User not found\"\n}"
+				}
+			]
+		}
+	]
+}
