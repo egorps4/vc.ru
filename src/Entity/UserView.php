@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\UniqueConstraint(name: "user_post_unique", columns: ["user_id", "post_id"])]
 class UserView
 {
     #[ORM\Id]
