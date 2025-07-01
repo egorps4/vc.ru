@@ -26,7 +26,7 @@
 
 2. **Запустите Docker-контейнеры**:
    ```bash
-   docker-compose up -d
+   docker-compose up -d или  docker compose up -d
    ```
 
 3. **Выполните скрипт настройки**:
