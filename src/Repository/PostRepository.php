@@ -17,7 +17,7 @@ class PostRepository extends ServiceEntityRepository
         $this->redis = $redis;
     }
 
-    public function getById(int $id): array
+    public function getById(int $id): ?array
     {
         $sql = 'SELECT * FROM post WHERE id = :id';
 
@@ -29,7 +29,7 @@ class PostRepository extends ServiceEntityRepository
 
     public function getPosts(int $userId, int $page = 1, int $limit = 50, string $sortOrder = 'DESC'): array
     {
-        $cacheKey = sprintf('posts:user:%d:page:%d:limit:%d', $userId, $page, $limit);
+        $cacheKey = sprintf('posts:user:%d:page:%d:limit:%d:order:%d', $userId, $page, $limit, $sortOrder);
         $cached = $this->redis->get($cacheKey);
 
         if ($cached) {

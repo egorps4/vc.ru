@@ -14,7 +14,7 @@ class UserRepository extends ServiceEntityRepository
         $this->connection = $connection;
     }
 
-    public function getById(int $id): array
+    public function getById(int $id): ?array
     {
         $sql = 'SELECT * FROM "user" WHERE id = :id';
 
